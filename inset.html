@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>প্রশ্ন/উত্তর</title>
+</head>
+<body>
+    <form id="form">
+        <label>প্রশ্ন</label>
+        <input onclick="xyz(this)" type="text" id="qs" placeholder="question" required>
+        <label>উত্তর</label>
+        <input onclick="xyz(this)" type="text" id="ans" placeholder="answer" required>
+        <input type="submit" value="submit">
+    </form>
+    <h2></h2>
+    <script>
+        const form = document.getElementById('form');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const qs = document.querySelector('#qs').value;
+            const ans = document.querySelector('#ans').value;
+            fetch('/post', {
+                method: 'POST',
+                body: JSON.stringify({
+                [qs]:ans
+                })
+            })
+            .then(data => data.text())
+            .then(result =>document.querySelector('h2').innerText=result)
+            document.querySelector('#qs').value=null;
+            document.querySelector('#ans').value=null;
+        })
+        function xyz(element){
+            var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+            var recognition = new SpeechRecognition();
+            recognition.lang = 'BN';
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                element.value = transcript;
+            };
+            recognition.start();
+        }
+        
+    </script>
+</body>
+</html>
